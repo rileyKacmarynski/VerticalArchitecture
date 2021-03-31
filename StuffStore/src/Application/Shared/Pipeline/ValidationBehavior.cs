@@ -1,17 +1,14 @@
-﻿using Application.Abstractions;
-using Application.Shared.ResultType;
+﻿using Application.Shared.ResultType;
 using FluentValidation;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Shared.Pipeline
 {
-    public class ValidationPipelineBehavior<TUseCase, TResult> : IPipelineBehavior<TUseCase, TResult>
+    public class ValidationBehavior<TUseCase, TResult> : IPipelineBehavior<TUseCase, TResult>
         where TResult : Result<TResult>
     {
         private readonly IEnumerable<IValidator<TUseCase>> _validators;

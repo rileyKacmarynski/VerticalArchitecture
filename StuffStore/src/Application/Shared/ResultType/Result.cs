@@ -1,26 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Application.Shared.ResultType
 {
     public class Result
     {
-        public string Error { get; private set; }
-        public ResultStatus Status { get; set; }
-        public bool Success => Status == ResultStatus.Ok;
+        public string ErrorMessage { get; private set; }
+        public ResultStatuses Status { get; private set; }
+        public bool Success => Status == ResultStatuses.Ok;
         public bool Failure => !Success;
         public IReadOnlyCollection<ValidationError> ValidationErrors => _validationErrors.AsReadOnly();
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
-        protected Result(ResultStatus status, string error)
+        protected Result(ResultStatuses status, string error)
         {
             Status = status;
-            Error = error;
+            ErrorMessage = error;
         }
 
-        public Result(ResultStatus status, string error, IEnumerable<(string property, string message)> validationErrors) 
+        public Result(ResultStatuses status, string error, IEnumerable<(string property, string message)> validationErrors) 
             : this(status, error)
         {
             foreach (var (property, message) in validationErrors)
@@ -39,35 +37,35 @@ namespace Application.Shared.ResultType
         }
 
         public static Result Fail(string message) =>
-            new Result(ResultStatus.Error, message);
+            new Result(ResultStatuses.Error, message);
 
         public static Result<T> Fail<T>(string message) =>
-            new Result<T>(default, ResultStatus.Error, message);
+            new Result<T>(default, ResultStatuses.Error, message);
 
         public static Result Ok() =>
-            new Result(ResultStatus.Ok, string.Empty);
+            new Result(ResultStatuses.Ok, string.Empty);
 
         public static Result<T> Ok<T>(T value) =>
-            new Result<T>(value, ResultStatus.Error, string.Empty);
+            new Result<T>(value, ResultStatuses.Ok, string.Empty);
 
-        public static Result NotFound() =>
-            new Result(ResultStatus.NotFound, string.Empty);
+        public static Result NotFound(string message) =>
+            new Result(ResultStatuses.NotFound, message);
 
-        public static Result<T> NotFound<T>(T value) =>
-            new Result<T>(value, ResultStatus.NotFound, string.Empty);
+        public static Result<T> NotFound<T>(string message) =>
+            new Result<T>(default, ResultStatuses.NotFound, message);
 
         // We need this one to make the compiler happy.
         public static Result Invalid(IEnumerable<(string, string)> validationErrors)
         {
             var errorMessage = $"Error validating.";
-            return new Result(ResultStatus.Invalid, errorMessage, validationErrors);
+            return new Result(ResultStatuses.Invalid, errorMessage, validationErrors);
         }
 
         // We need this one to make the compiler happy.
         public static Result<T> Invalid<T>(IEnumerable<(string, string)> validationErrors)
         {
             var errorMessage = $"Error validating {typeof(T)}";
-            return new Result<T>(ResultStatus.Invalid, errorMessage, validationErrors);
+            return new Result<T>(ResultStatuses.Invalid, errorMessage, validationErrors);
         }
     }
 
@@ -77,14 +75,14 @@ namespace Application.Shared.ResultType
 
         public T Value { get; }
 
-        protected internal Result(T value, ResultStatus status, string error)
+        protected internal Result(T value, ResultStatuses status, string error)
             : base(status, error)
         {
             _value = value;
             Value = value;
         }
 
-        public Result(ResultStatus status, string errorMessage, IEnumerable<(string Property, string Message)> validationErrors)
+        public Result(ResultStatuses status, string errorMessage, IEnumerable<(string Property, string Message)> validationErrors)
             : base(status, errorMessage)
         {
             foreach(var (property, message) in validationErrors)
@@ -97,11 +95,11 @@ namespace Application.Shared.ResultType
         // Not sure how I feel about this yet.
         // Leaning towards client apps looking at the status and deciding what to do
         // based on that
-        public TResult GetResult<TResult>(Func<T, TResult> onSuccess, Func<string, TResult> onFail)
+        public TResult GetValue<TResult>(Func<T, TResult> onSuccess, Func<Result, TResult> onFail)
         {
             return Success
                 ? onSuccess(_value)
-                : onFail(Error);
+                : onFail(this);
         }
     }
 

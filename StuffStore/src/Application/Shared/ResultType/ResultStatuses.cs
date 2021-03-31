@@ -1,10 +1,11 @@
 ﻿namespace Application.Shared.ResultType
 {
-    public enum ResultStatus
+    public enum ResultStatuses
     {
         Ok,
         Error,
         Invalid,
+        InvariantViolation,
         NotFound
     }
 }
