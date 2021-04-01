@@ -13,6 +13,11 @@ namespace Application.Shared.Pipeline
     {
         private readonly IEnumerable<IValidator<TUseCase>> _validators;
 
+        public ValidationBehavior(IEnumerable<IValidator<TUseCase>> validators)
+        {
+            _validators = validators;
+        }
+
         public Task<TResult> Handle(TUseCase useCase, CancellationToken cancellationToken, RequestHandlerDelegate<TResult> next)
         {
             var errors = _validators
