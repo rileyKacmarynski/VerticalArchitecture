@@ -1,4 +1,5 @@
 ﻿using Application.Products.GetProduct;
+using Application.Shared.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -32,7 +33,8 @@ namespace Application
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
                 .AsImplementedInterfaces());
 
-            //services.AddPipelineBehavior(typeof)
+            services.AddPipelineBehavior(typeof(ErrorHandlingBehavior<,>));
+            services.AddPipelineBehavior(typeof(ValidationBehavior<,>));
 
             return services;
         }
