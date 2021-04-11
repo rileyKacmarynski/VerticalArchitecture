@@ -1,4 +1,5 @@
-﻿using Application.Shared.ResultType;
+﻿using Application.Shared.Exceptions;
+using Application.Shared.ResultType;
 using MediatR;
 using System;
 using System.Threading;
@@ -15,10 +16,14 @@ namespace Application.Shared.Pipeline
             {
                 return next();
             }
-            // add more specific error catching here
+            catch(EntityNotFoundException ex)
+            {
+                // todo: test if I need TResult here
+                return Result.NotFound<TResult>(ex.Message).AsTask<TResult>();
+            }
             catch(Exception ex)
             {
-                return Task.FromResult(Result.Fail<TResult>(ex.Message) as TResult);
+                return Result.Fail<TResult>(ex.Message).AsTask<TResult>();
             }
         }
     }

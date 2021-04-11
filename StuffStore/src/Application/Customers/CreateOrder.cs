@@ -15,9 +15,9 @@ namespace Application.Customers
         public class Handler : IUseCaseHandler<UseCase>
         {
             private readonly ICustomerRepository _customerRepository;
-            private readonly ProductRepository _productRepository;
+            private readonly IProductRepository _productRepository;
 
-            public Handler(ICustomerRepository customerRepository, ProductRepository productRepository)
+            public Handler(ICustomerRepository customerRepository, IProductRepository productRepository)
             {
                 _customerRepository = customerRepository;
                 _productRepository = productRepository;

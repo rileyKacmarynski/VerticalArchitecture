@@ -16,6 +16,8 @@ namespace Domain.Customers
             OrderProducts = new List<OrderProduct>();
         }
 
+        private Order() { } // For EF
+
         public int Id { get; }
         public ICollection<OrderProduct> OrderProducts { get; set; }
         public string City { get; }

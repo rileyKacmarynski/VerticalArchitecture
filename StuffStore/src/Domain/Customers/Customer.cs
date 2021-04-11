@@ -12,6 +12,13 @@ namespace Domain.Customers
             Email = email;
         }
 
+        public Customer(int id, string name, string email)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
+
         private Customer() { }  // for EF
 
         public int Id { get; }

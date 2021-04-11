@@ -7,9 +7,9 @@ namespace Application.Abstractions
 
     public interface IUseCase<TResult> : IRequest<Result<TResult>> { }
 
-    public interface IUseCaseHandler<TUseCase, TResult> : IRequestHandler<TUseCase, Result<TResult>> 
-        where TUseCase : IUseCase<TResult> { }
-
     public interface IUseCaseHandler<TUseCase> :
         IRequestHandler<TUseCase, Result> where TUseCase : IUseCase { }
+
+    public interface IUseCaseHandler<TUseCase, TResult> : IRequestHandler<TUseCase, Result<TResult>> 
+        where TUseCase : IUseCase<TResult> { }
 }

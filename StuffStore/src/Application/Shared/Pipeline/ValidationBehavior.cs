@@ -34,7 +34,7 @@ namespace Application.Shared.Pipeline
             var errorTuples = errors
                 .Select(e => (e.PropertyName, e.ErrorMessage));
 
-            return Task.FromResult(Result.Invalid<TResult>(errorTuples) as TResult);
+            return Result.Invalid<TResult>(errorTuples).AsTask<TResult>();
         }
     }
 }

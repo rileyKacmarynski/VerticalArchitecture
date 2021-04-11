@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Application.Shared.Exceptions;
 using Domain.Customers;
 using System.Threading.Tasks;
 
@@ -20,7 +21,10 @@ namespace Database.Repositories
 
         public async Task<Customer> GetByIdAsync(int customerId)
         {
-            return await _context.Customers.FindAsync(customerId);
+            var customer = await _context.Customers.FindAsync(customerId);
+            return customer is null
+                ? throw new EntityNotFoundException<Customer>(customerId)
+                : customer;
         }
 
         public async Task<int> SaveChangesAsync()
