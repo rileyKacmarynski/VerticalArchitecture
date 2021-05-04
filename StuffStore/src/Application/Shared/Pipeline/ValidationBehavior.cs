@@ -8,20 +8,22 @@ using System.Threading.Tasks;
 
 namespace Application.Shared.Pipeline
 {
-    public class ValidationBehavior<TUseCase, TResult> : IPipelineBehavior<TUseCase, TResult>
+    public class ValidationBehavior<TRequest, TResult> : IPipelineBehavior<TRequest, TResult>
         where TResult : Result<TResult>
     {
-        private readonly IEnumerable<IValidator<TUseCase>> _validators;
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public ValidationBehavior(IEnumerable<IValidator<TUseCase>> validators)
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
         {
             _validators = validators;
         }
 
-        public Task<TResult> Handle(TUseCase useCase, CancellationToken cancellationToken, RequestHandlerDelegate<TResult> next)
+        public Task<TResult> Handle(TRequest request, 
+            CancellationToken cancellationToken, 
+            RequestHandlerDelegate<TResult> next)
         {
             var errors = _validators
-                .Select(v => v.Validate(useCase))
+                .Select(v => v.Validate(request))
                 .SelectMany(result => result.Errors)
                 .Where(error => error != null)
                 .ToList();
@@ -31,10 +33,7 @@ namespace Application.Shared.Pipeline
                 return next();
             }
 
-            var errorTuples = errors
-                .Select(e => (e.PropertyName, e.ErrorMessage));
-
-            return Result.Invalid<TResult>(errorTuples).AsTask<TResult>();
+            throw new ValidationException(errors);
         }
     }
 }

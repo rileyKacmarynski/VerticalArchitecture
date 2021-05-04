@@ -22,8 +22,6 @@ namespace IntegrationTests
                 .Build();
         }
 
-        public TestApplication GetTestApplication() => GetTestApplication(_ => { });
-
         public TestApplication GetTestApplication(Action<IServiceCollection> configureServices)
         {
             var startup = new Startup.Startup(_configuration);
@@ -40,6 +38,8 @@ namespace IntegrationTests
 
             return new TestApplication(_configuration, scopeFactory);
         }
+
+        public TestApplication GetTestApplication() => GetTestApplication(_ => { });
     }
 
     public class TestApplication

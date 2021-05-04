@@ -13,7 +13,7 @@ namespace Application.Customers
 {
     public class RegisterCustomer
     {
-        public class Handler : IUseCaseHandler<UseCase>
+        public class Handler : IUseCaseHandler<Request>
         {
             private readonly ICustomerRepository _customerRepository;
 
@@ -22,7 +22,7 @@ namespace Application.Customers
                 _customerRepository = customerRepository;
             }
 
-            public async Task<Result> Handle(UseCase useCase, CancellationToken cancellationToken)
+            public async Task<Result> Handle(Request useCase, CancellationToken cancellationToken)
             {
                 var customer = new Customer(useCase.Name, useCase.Email);
 
@@ -33,13 +33,13 @@ namespace Application.Customers
             }
         }
 
-        public class UseCase : IUseCase
+        public class Request : IUseCase
         {
             public string Name { get; set; }
             public string Email { get; set; }
         }
 
-        public class Validator : AbstractValidator<UseCase>
+        public class Validator : AbstractValidator<Request>
         {
             public Validator()
             {

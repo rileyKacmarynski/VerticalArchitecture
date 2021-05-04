@@ -2,6 +2,7 @@
 using Application.Shared.ResultType;
 using Domain.Customers;
 using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,22 +14,18 @@ namespace Application.Customers
 {
     public class CreateOrderLong
     {
-        public class Handler : IUseCaseHandler<UseCase>
+        public class Handler : IRequestHandler<Request>
         {
-            private readonly IValidator<UseCase> _validator;
-            private readonly ICustomerRepository _customerRepository;
-            private readonly ProductRepository _productRepository;
+            private readonly IValidator<Request> _validator;
 
-            public Handler(IValidator<UseCase> validator, 
-                ICustomerRepository customerRepository, 
-                ProductRepository productRepository)
+
+            public Handler(IValidator<Request> validator, 
+                ILogger)
             {
                 _validator = validator;
-                _customerRepository = customerRepository;
-                _productRepository = productRepository;
             }
 
-            public async Task<Result> Handle(UseCase useCase, CancellationToken cancellationToken)
+            public async Task<Result> Handle(Request useCase, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -80,9 +77,9 @@ namespace Application.Customers
             }
         }
 
-        public class UseCaseValidator : AbstractValidator<UseCase>
+        public class RequestValidator : AbstractValidator<Request>
         {
-            public UseCaseValidator()
+            public RequestValidator()
             {
                 RuleFor(u => u.CustomerId).NotEmpty();
                 RuleFor(u => u.CartItems).NotEmpty().WithMessage("Must have at least one cart item");
@@ -95,7 +92,7 @@ namespace Application.Customers
             }
         }
 
-        public record UseCase : IUseCase
+        public record Request : IRequest
         {
             public int CustomerId { get; set; }
             public IEnumerable<CartItemDto> CartItems { get; set; }

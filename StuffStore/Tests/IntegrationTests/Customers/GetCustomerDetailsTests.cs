@@ -27,18 +27,16 @@ namespace IntegrationTests.Customers
                 await context.SaveChangesAsync();
             });
 
-            var useCase = new GetCustomerDetails.UseCase() { CustomerId = 1 };
+            var request = new GetCustomerDetails.Request { CustomerId = 1 };
 
             // act
-            var result = await _testApplication.SendAsync(useCase);
+            var result = await _testApplication.SendAsync(request);
 
             // assert
             result.Success.Should().BeTrue();
 
             var value = result.Get();
-            value.Should().NotBeNull();
-            value.Id.Should().Be(1);
-            value.Name.Should().Be("Bob");
+            value.Should().BeSameAs(customer);
         }
     }
 }

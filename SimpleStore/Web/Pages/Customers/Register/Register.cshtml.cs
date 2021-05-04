@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Web.Pages.Customers.Register;
 
 namespace MyApp.Namespace
 {
-    public class RegisterModel : PageModel
+    public class DetailsModel : PageModel
     {
         private readonly IMediator _mediator;
 
         public RegisterCustomerCommand Data { get; set; }
 
-        public RegisterModel(IMediator mediator)
+        public DetailsModel(IMediator mediator)
         {
             _mediator = mediator;
         }

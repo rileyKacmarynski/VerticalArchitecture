@@ -17,7 +17,7 @@ namespace UnitTests
         {
             // arrange
             var customerRepoMock = new Mock<ICustomerRepository>().Object;
-            var useCase = new RegisterCustomer.UseCase
+            var useCase = new RegisterCustomer.Request
             {
                 Name = "Bob",
                 Email = "Bob@email.com"
@@ -40,7 +40,7 @@ namespace UnitTests
             var customerRepoMock = new Mock<ICustomerRepository>();
             customerRepoMock.Setup(repo => repo.SaveChangesAsync().Result).Throws<Exception>();
 
-            var useCase = new RegisterCustomer.UseCase
+            var useCase = new RegisterCustomer.Request
             {
                 Name = "Bob",
                 Email = "Bob@email.com"
@@ -57,7 +57,7 @@ namespace UnitTests
         [Fact]
         public void Validator_ValidUseCase_NoErrors()
         {
-            var useCase = new RegisterCustomer.UseCase
+            var useCase = new RegisterCustomer.Request
             {
                 Name = "Bob",
                 Email = "Bob@email.com"
@@ -72,7 +72,7 @@ namespace UnitTests
         [Fact]
         public void Validator_InvalidName_InvalidResult()
         {
-            var useCase = new RegisterCustomer.UseCase
+            var useCase = new RegisterCustomer.Request
             {
                 Name = "",
                 Email = "Bob@email.com"

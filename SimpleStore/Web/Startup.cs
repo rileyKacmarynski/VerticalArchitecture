@@ -27,6 +27,7 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup).Assembly);
+            
             services.AddDbContext<SimpleStoreContext>(options => options.UseInMemoryDatabase("SimpleStore"));
             services.AddRazorPages();
         }

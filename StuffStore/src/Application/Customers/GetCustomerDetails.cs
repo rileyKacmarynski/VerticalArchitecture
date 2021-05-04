@@ -12,7 +12,7 @@ namespace Application.Customers
 {
     public class GetCustomerDetails
     {
-        public class Handler : IUseCaseHandler<UseCase, CustomerDetailsDto>
+        public class Handler : IUseCaseHandler<Request, CustomerDetailsDto>
         {
             private readonly ICustomerRepository _customerRepository;
 
@@ -21,7 +21,8 @@ namespace Application.Customers
                 _customerRepository = customerRepository;
             }
 
-            public async Task<Result<CustomerDetailsDto>> Handle(UseCase useCase, CancellationToken cancellationToken)
+            public async Task<Result<CustomerDetailsDto>> Handle(Request useCase, 
+                CancellationToken cancellationToken)
             {
                 var customer = await _customerRepository.GetByIdAsync(useCase.CustomerId);
                 
@@ -34,7 +35,7 @@ namespace Application.Customers
             }
         }
 
-        public class Validator : AbstractValidator<UseCase>
+        public class Validator : AbstractValidator<Request>
         {
             public Validator()
             {
@@ -42,7 +43,7 @@ namespace Application.Customers
             }
         }
 
-        public class UseCase : IUseCase<CustomerDetailsDto>
+        public class Request : IUseCase<CustomerDetailsDto>
         {
             public int CustomerId { get; set; }
         }

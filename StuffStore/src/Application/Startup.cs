@@ -3,6 +3,8 @@ using Application.Shared.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application
 {
@@ -33,8 +35,13 @@ namespace Application
                 .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
                 .AsImplementedInterfaces());
 
-            services.AddPipelineBehavior(typeof(ErrorHandlingBehavior<,>));
+            services.AddPipelineBehavior(typeof(LogginBehavior<,>));
             services.AddPipelineBehavior(typeof(ValidationBehavior<,>));
+
+            services.AddMediatR(typeof(Startup).Assembly);
+            // Order matters!!!
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LogginBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }

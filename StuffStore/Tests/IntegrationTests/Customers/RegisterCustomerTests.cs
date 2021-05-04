@@ -18,9 +18,12 @@ namespace IntegrationTests.Customers
         [Fact]
         public async Task RegisterCustomer_RequestSuccessful_ReturnsOk()
         {
-            var useCase = new RegisterCustomer.UseCase { Email = "Bob@email.com", Name = "Bob" };
+            var request = new RegisterCustomer.Request
+            { 
+                Email = "Bob@email.com", Name = "Bob" 
+            };
 
-            var result = await _testApplication.SendAsync(useCase);
+            var result = await _testApplication.SendAsync(request);
 
             result.Success.Should().BeTrue();
         }
@@ -28,7 +31,7 @@ namespace IntegrationTests.Customers
         [Fact]
         public async Task RegisterCustomer_ValidationError_ReturnsInvalidResult()
         {
-            var useCase = new RegisterCustomer.UseCase { Email = "", Name = "" };
+            var useCase = new RegisterCustomer.Request { Email = "", Name = "" };
 
             var result = await _testApplication.SendAsync(useCase);
 

@@ -26,7 +26,7 @@ namespace UnitTests
                 .Returns(customer);
 
 
-            var useCase = new GetCustomerDetails.UseCase { CustomerId = customer.Id };
+            var useCase = new GetCustomerDetails.Request { CustomerId = customer.Id };
 
             // act
             var handler = new GetCustomerDetails.Handler(customerRepoMock.Object);
@@ -50,7 +50,7 @@ namespace UnitTests
             customerRepoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<int>()).Result)
                 .Throws(new EntityNotFoundException<Customer>(id));
 
-            var useCase = new GetCustomerDetails.UseCase { CustomerId = id };
+            var useCase = new GetCustomerDetails.Request { CustomerId = id };
 
             // act
             var handler = new GetCustomerDetails.Handler(customerRepoMock.Object);
